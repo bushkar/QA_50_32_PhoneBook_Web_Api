@@ -49,4 +49,13 @@ public class RegistrationTests extends AppManager {
         Assert.assertTrue(loginPage.closeAlertReturnText().contains("Wrong email or password format"));
     }
 
+    @Test
+    public void registrationNegativeTest_WithFaker_EmptyPassword() {
+        User user = positiveUser();
+        user.setPassword("");
+        loginPage.typeLoginRegistrationFormWithUser(user);
+        loginPage.clickBtnRegistrationForm();
+        Assert.assertTrue(loginPage.closeAlertReturnText().contains("Wrong email or password format"));
+    }
+
 }
