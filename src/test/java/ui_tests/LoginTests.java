@@ -9,15 +9,19 @@ import pages.HomePage;
 import pages.LoginPage;
 import utils.RetryAnalyser;
 
+import static utils.PropertiesReader.*;
+
 public class LoginTests extends AppManager {
 
     @Test(retryAnalyzer = RetryAnalyser.class)
     public void loginPositiveTest() {
-        System.out.println("first test");
+//        System.out.println("first test");
         HomePage homePage = new HomePage(getDriver());
         homePage.clickBtnLogin();
         LoginPage loginPage = new LoginPage(getDriver());
-        loginPage.typeLoginRegistrationForm("family@mail.ru", "Family123!");
+//        loginPage.typeLoginRegistrationForm("family@mail.ru", "Family123!");
+        loginPage.typeLoginRegistrationForm(getProperty("base.properties", "login"),
+                getProperty("base.properties", "password"));
         loginPage.clickBtnLoginForm();
 
 //        ContactsPage contactsPage = new ContactsPage(getDriver());
@@ -27,7 +31,9 @@ public class LoginTests extends AppManager {
 
     @Test
     public void loginPositiveTestWithUser() {
-        User user = new User("family@mail.ru", "Family123!");
+//        User user = new User("family@mail.ru", "Family123!");
+        User user = new User(getProperty("base.properties", "login"),
+                getProperty("base.properties", "password"));
         HomePage homePage = new HomePage(getDriver());
         homePage.clickBtnLogin();
         LoginPage loginPage = new LoginPage(getDriver());
