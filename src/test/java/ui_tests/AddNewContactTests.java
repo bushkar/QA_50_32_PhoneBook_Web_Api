@@ -1,18 +1,23 @@
 package ui_tests;
 
+import data_providers.ContactDataProvider;
+import data_providers.ContactWrongPhoneDataProvider;
 import dto.Contact;
 import manager.AppManager;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pages.*;
 import utils.HeaderMenuItem;
 
 import static pages.BasePage.clickButtonHeader;
 import static utils.ContactFactory.*;
+import static utils.PropertiesReader.getProperty;
 
 
 public class AddNewContactTests extends AppManager {
+    SoftAssert softAssert = new SoftAssert();
     HomePage homePage;
     LoginPage loginPage;
     ContactsPage contactsPage;
@@ -23,7 +28,9 @@ public class AddNewContactTests extends AppManager {
     public void login() {
         homePage = new HomePage(getDriver());
         loginPage = clickButtonHeader(HeaderMenuItem.LOGIN);
-        loginPage.typeLoginRegistrationForm("family@mail.ru", "Family123!");
+//        loginPage.typeLoginRegistrationForm("family@mail.ru", "Family123!");
+        loginPage.typeLoginRegistrationForm(getProperty("base.properties", "login"),
+                getProperty("base.properties", "password"));
         loginPage.clickBtnLoginForm();
         contactsPage = new ContactsPage(getDriver());
         countOfContacts = contactsPage.getCountOfContacts();
@@ -33,6 +40,14 @@ public class AddNewContactTests extends AppManager {
     @Test
     public void addNewContactPositiveTest() {
         addPage.typeContactForm(positiveContact());
+        int countOfContactsAfterAdd = contactsPage.getCountOfContacts();
+        Assert.assertEquals(countOfContactsAfterAdd, countOfContacts + 1);
+    }
+
+    @Test(dataProvider = "dataProviderFromFile",
+            dataProviderClass = ContactDataProvider.class)
+    public void addNewContactPositiveTest_WithDataProvider(Contact contact) {
+        addPage.typeContactForm(contact);
         int countOfContactsAfterAdd = contactsPage.getCountOfContacts();
         Assert.assertEquals(countOfContactsAfterAdd, countOfContacts + 1);
     }
@@ -50,5 +65,22 @@ public class AddNewContactTests extends AppManager {
         Contact contact = positiveContact();
         addPage.typeContactForm(contact);
         contactsPage.scrollToLastContact();
+        contactsPage.clickLastContact();
+        String text = contactsPage.getTextInContact();
+        softAssert.assertTrue(text.contains(contact.getName()),
+                "validate Name in DetailCard");
+        softAssert.assertTrue(text.contains(contact.getEmail()),
+                "validate Email in DetailCard");
+        softAssert.assertTrue(text.contains(contact.getPhone()),
+                "validate Phone in DetailCard");
+        softAssert.assertAll();
+    }
+
+    @Test(dataProvider = "dataProviderFromFile",
+            dataProviderClass = ContactWrongPhoneDataProvider.class)
+    public void addNewContactNegativeTest_WrongPhones_WithDataProvider(Contact contact) {
+        addPage.typeContactForm(contact);
+        Assert.assertTrue(addPage.closeAlertReturnText().contains("Phone not valid"));
+        tearDown();
     }
 }
