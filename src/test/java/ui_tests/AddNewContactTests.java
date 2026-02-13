@@ -83,4 +83,11 @@ public class AddNewContactTests extends AppManager {
         Assert.assertTrue(addPage.closeAlertReturnText().contains("Phone not valid"));
         tearDown();
     }
+
+    @Test(dataProvider = "dataProviderFromFile_Wrong_EmptyField",
+            dataProviderClass = ContactDataProvider.class)
+    public void addNewContactNegativeTest_EmptyFieldWithDP(Contact contact) {
+        addPage.typeContactForm(contact);
+        Assert.assertTrue(addPage.isButtonSaveDisabled());
+    }
 }
