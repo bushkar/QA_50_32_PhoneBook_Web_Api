@@ -11,6 +11,8 @@ import org.testng.asserts.SoftAssert;
 import pages.*;
 import utils.HeaderMenuItem;
 
+import java.lang.reflect.Method;
+
 import static pages.BasePage.clickButtonHeader;
 import static utils.ContactFactory.*;
 import static utils.PropertiesReader.getProperty;
@@ -89,5 +91,13 @@ public class AddNewContactTests extends AppManager {
     public void addNewContactNegativeTest_EmptyFieldWithDP(Contact contact) {
         addPage.typeContactForm(contact);
         Assert.assertTrue(addPage.isButtonSaveDisabled());
+    }
+
+    @Test(dataProvider = "dataProviderFromFile_WrongEmail",
+            dataProviderClass = ContactDataProvider.class)
+    public void addNewContactNegativeTest_WrongEmail_WithDP(Method method, Contact contact) {
+        logger.info("start test " + method.getName() + " with contact " + contact);
+        addPage.typeContactForm(contact);
+        Assert.assertTrue(addPage.closeAlertReturnText().contains("Email not valid"));
     }
 }

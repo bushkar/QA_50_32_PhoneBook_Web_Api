@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static manager.AppManager.logger;
 import static utils.ContactFactory.positiveContact;
 
 public class ContactDataProvider {
@@ -65,4 +66,32 @@ public class ContactDataProvider {
         }
         return list.listIterator();
     }
+
+    @DataProvider
+    public Iterator<Contact> dataProviderFromFile_WrongEmail() {
+        Contact contact = positiveContact();
+        List<Contact> list = new ArrayList<>();
+        try (BufferedReader bufferedReader =
+                     new BufferedReader(new FileReader
+                             ("src/test/resources/data_csv/data_wrong_emails.csv"))) {
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                list.add(Contact.builder()
+                        .name(contact.getName())
+                        .lastName(contact.getLastName())
+                        .email(line)
+                        .phone(contact.getPhone())
+                        .address(contact.getAddress())
+                        .description(contact.getDescription())
+                        .build());
+                line = bufferedReader.readLine();
+            }
+        } catch (IOException e) {
+            logger.info(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("IO exception");
+        }
+        return list.listIterator();
+    }
 }
+
