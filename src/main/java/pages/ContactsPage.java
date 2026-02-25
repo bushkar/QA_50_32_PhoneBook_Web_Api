@@ -34,8 +34,26 @@ public class ContactsPage extends BasePage {
     WebElement divListContacts;
     @FindBy(xpath = "//div[@class='contact-item-detailed_card__50dTS']")
     WebElement itemDetailCard;
+    @FindBy(xpath = "//button[text()='Remove']")
+    WebElement btnRemove;
+    @FindBy(xpath = "//button[text()='Edit']")
+    WebElement btnEdit;
+    @FindBy(xpath = "//div[@class='form_form__FOqHs']/input[1]")
+    WebElement inputName;
+    @FindBy(xpath = "//div[@class='form_form__FOqHs']/input[2]")
+    WebElement inputLastName;
+    @FindBy(xpath = "//div[@class='form_form__FOqHs']/input[3]")
+    WebElement inputPhone;
+    @FindBy(xpath = "//div[@class='form_form__FOqHs']/input[4]")
+    WebElement inputEmail;
+    @FindBy(xpath = "//div[@class='form_form__FOqHs']/input[5]")
+    WebElement inputAddress;
+    @FindBy(xpath = "//div[@class='form_form__FOqHs']/input[6]")
+    WebElement inputDescription;
+    @FindBy(xpath = "//button[text()='Save']")
+    WebElement btnSave;
 
-    public String getTextInContact(){
+    public String getTextInContact() {
         return itemDetailCard.getText();
     }
 
@@ -92,5 +110,36 @@ public class ContactsPage extends BasePage {
 
     public boolean isTextInContactPageMessage(String text) {
         return isTextInElementPresent(contactPageMessage, text);
+    }
+
+    public boolean openContact(int contactIndex) {
+        if (getCountOfContacts() <= contactIndex)
+            return false;
+        contactsList.get(contactIndex).click();
+        return true;
+    }
+
+    public void deleteContact() {
+        btnRemove.click();
+    }
+
+    public void editContact() {
+        btnEdit.click();
+    }
+
+    public void typeContactForm(Contact contact) {
+        inputName.clear();
+        inputName.sendKeys(contact.getName());
+        inputLastName.clear();
+        inputLastName.sendKeys(contact.getLastName());
+        inputPhone.clear();
+        inputPhone.sendKeys(contact.getPhone());
+        inputEmail.clear();
+        inputEmail.sendKeys(contact.getEmail());
+        inputAddress.clear();
+        inputAddress.sendKeys(contact.getAddress());
+        inputDescription.clear();
+        inputDescription.sendKeys(contact.getDescription());
+        btnSave.click();
     }
 }
