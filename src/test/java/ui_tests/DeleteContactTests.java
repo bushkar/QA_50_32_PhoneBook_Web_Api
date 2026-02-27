@@ -30,7 +30,8 @@ public class DeleteContactTests extends AppManager {
         loginPage.typeLoginRegistrationForm(getProperty("base.properties", "login"),
                 getProperty("base.properties", "password"));
         loginPage.clickBtnLoginForm();
-        contactsPage = clickButtonHeader(HeaderMenuItem.CONTACTS);
+//        contactsPage = clickButtonHeader(HeaderMenuItem.CONTACTS);
+        contactsPage = new ContactsPage(getDriver());
         countOfContacts = contactsPage.getCountOfContacts();
     }
 
