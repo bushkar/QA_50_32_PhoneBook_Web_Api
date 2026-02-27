@@ -142,4 +142,25 @@ public class ContactsPage extends BasePage {
         inputDescription.sendKeys(contact.getDescription());
         btnSave.click();
     }
+
+    public void deleteFirstContact() {
+        contactsList.get(0).click();
+        btnRemove.click();
+    }
+
+    public void typeEditForm(Contact contact) {
+        contactsList.get(0).click();
+        btnEdit.click();
+        inputName.clear();
+        inputName.sendKeys(contact.getName());
+        inputLastName.clear();
+        inputLastName.sendKeys(contact.getLastName());
+        inputPhone.clear();
+        inputPhone.sendKeys(contact.getPhone());
+        inputEmail.clear();
+        inputEmail.sendKeys(contact.getEmail());
+        inputAddress.clear();
+        inputAddress.sendKeys(contact.getAddress());
+        btnSave.click();
+    }
 }
