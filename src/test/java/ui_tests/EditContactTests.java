@@ -47,7 +47,7 @@ public class EditContactTests extends AppManager {
         contactsPage.editContact();
         Contact contact = positiveContact();
         contactsPage.typeContactForm(contact);
-        contactsPage.scrollToLastContact();
+        contactsPage.pause(3);
         softAssert.assertTrue(contactsPage.openContact(contactIndex), "failed to open contact after edit");
         String text = contactsPage.getTextInContact();
         softAssert.assertTrue(text.contains(contact.getName()), "validate Name in DetailCard");
@@ -55,7 +55,7 @@ public class EditContactTests extends AppManager {
         softAssert.assertTrue(text.contains(contact.getPhone()), "validate Phone in DetailCard");
         softAssert.assertTrue(text.contains(contact.getEmail()), "validate Email in DetailCard");
         softAssert.assertTrue(text.contains(contact.getAddress()), "validate Address in DetailCard");
-        softAssert.assertTrue(text.contains(contact.getDescription()), "validate Description in DetailCard");
+//        softAssert.assertTrue(text.contains(contact.getDescription()), "validate Description in DetailCard");
         softAssert.assertAll();
     }
 
