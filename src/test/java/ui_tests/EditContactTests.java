@@ -66,4 +66,19 @@ public class EditContactTests extends AppManager {
         contactsPage.pause(3);
         Assert.assertTrue(contactsPage.isContactPresent(contact));
     }
+
+    @Test
+    public void editFirstContactPositiveTest_WithCardOfContact() {
+        Contact contact = ContactFactory.positiveContact();
+        contactsPage.typeEditForm(contact);
+        contactsPage.pause(3);
+        String text = contactsPage.getTextInContact();
+        softAssert.assertTrue(text.contains(contact.getName()),
+                "validate Name in DetailCard");
+        softAssert.assertTrue(text.contains(contact.getEmail()),
+                "validate Email in DetailCard");
+        softAssert.assertTrue(text.contains(contact.getPhone()),
+                "validate Phone in DetailCard");
+        softAssert.assertAll();
+    }
 }
