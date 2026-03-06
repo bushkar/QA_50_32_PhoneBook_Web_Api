@@ -23,7 +23,7 @@ public class AppManager {
         return driver;
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() {
         logger.info("Start testing " + LocalDate.now() + " : " + LocalTime.now());
         driver = new ChromeDriver();
@@ -34,7 +34,8 @@ public class AppManager {
         driver = new EventFiringDecorator<>(webDriverListener).decorate(driver);
     }
 
-    @AfterMethod(enabled = false)
+//    @AfterMethod(enabled = false)
+@AfterMethod(enabled = true, alwaysRun = true)
     public void tearDown() {
         logger.info("Stop testing " + LocalDate.now() + " : " + LocalTime.now());
         if (driver != null)

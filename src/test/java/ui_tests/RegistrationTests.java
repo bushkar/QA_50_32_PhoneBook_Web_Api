@@ -16,13 +16,13 @@ import static utils.UserFactory.positiveUser;
 public class RegistrationTests extends AppManager {
     LoginPage loginPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void goToRegistrationPage() {
         new HomePage(getDriver()).clickBtnLogin();
         loginPage = new LoginPage(getDriver());
     }
 
-    @Test
+    @Test(groups = {"smoke", "user"})
     public void registrationPositiveTest() {
         int i = new Random().nextInt(1000);
         User user = new User("muyitr" + i + "@gmail.com", "Password124!");
@@ -31,7 +31,7 @@ public class RegistrationTests extends AppManager {
         Assert.assertTrue(new ContactsPage(getDriver()).isTextInContactPageMessage("No Contacts here!"));
     }
 
-    @Test
+    @Test(groups = {"smoke", "user"})
     public void registrationPositiveTest_WithFaker() {
         User user = positiveUser();
         System.out.println(user);
@@ -40,7 +40,7 @@ public class RegistrationTests extends AppManager {
         Assert.assertTrue(new ContactsPage(getDriver()).isTextInContactPageMessage("No Contacts here!"));
     }
 
-    @Test
+    @Test(groups = "negative")
     public void registrationNegativeTest_WrongEmail() {
         int i = new Random().nextInt(1000);
         User user = new User("muyitr" + i + "gmail.com", "Password124!");
@@ -49,7 +49,7 @@ public class RegistrationTests extends AppManager {
         Assert.assertTrue(loginPage.closeAlertReturnText().contains("Wrong email or password format"));
     }
 
-    @Test
+    @Test(groups = "negative")
     public void registrationNegativeTest_WithFaker_EmptyPassword() {
         User user = positiveUser();
         user.setPassword("");

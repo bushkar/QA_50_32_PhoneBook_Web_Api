@@ -28,7 +28,7 @@ public class EditContactTests extends AppManager {
     LoginPage loginPage;
     ContactsPage contactsPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void login() {
         homePage = new HomePage(getDriver());
 //        loginPage = clickButtonHeader(HeaderMenuItem.LOGIN);
@@ -59,7 +59,7 @@ public class EditContactTests extends AppManager {
         softAssert.assertAll();
     }
 
-    @Test
+    @Test(groups = {"smoke", "contact"})
     public void editFirstContactPositiveTest() {
         Contact contact = ContactFactory.positiveContact();
         contactsPage.typeEditForm(contact);
@@ -67,7 +67,7 @@ public class EditContactTests extends AppManager {
         Assert.assertTrue(contactsPage.isContactPresent(contact));
     }
 
-    @Test
+    @Test(groups = {"smoke", "contact"})
     public void editFirstContactPositiveTest_WithCardOfContact() {
         Contact contact = ContactFactory.positiveContact();
         contactsPage.typeEditForm(contact);

@@ -32,7 +32,7 @@ public class LoginTests extends AppManager {
         Assert.assertTrue(new ContactsPage(getDriver()).isTextInBtnAddPresent("ADD"));
     }
 
-    @Test
+    @Test(groups = {"smoke", "user"})
     public void loginPositiveTestWithUser() {
 //        User user = new User("family@mail.ru", "Family123!");
         User user = new User(getProperty("base.properties", "login"),
@@ -48,7 +48,7 @@ public class LoginTests extends AppManager {
         Assert.assertTrue(new ContactsPage(getDriver()).isTextInBtnContactsPresent("CONTACTS"));
     }
 
-    @Test
+    @Test(groups = "negative")
     public void loginNegativeTest_WrongEmail() {
         User user = new User("familymail.ru", "Family123!");
         HomePage homePage = new HomePage(getDriver());
@@ -59,7 +59,7 @@ public class LoginTests extends AppManager {
         Assert.assertEquals(loginPage.closeAlertReturnText(), "Wrong email or password");
     }
 
-    @Test
+    @Test(groups = "negative")
     public void loginNegativeTest_WrongPassword() {
         User user = new User("family@mail.ru", "Famil123!");
         HomePage homePage = new HomePage(getDriver());
