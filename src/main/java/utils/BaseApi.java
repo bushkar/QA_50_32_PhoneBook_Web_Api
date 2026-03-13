@@ -17,4 +17,7 @@ public interface BaseApi {
 
     MediaType JSON = MediaType.get("application/json");
     OkHttpClient OK_HTTP_CLIENT = new OkHttpClient();
+    MediaType TEXT = MediaType.get("text/plain");
+    String AUTH = "Authorization";
+
 }
