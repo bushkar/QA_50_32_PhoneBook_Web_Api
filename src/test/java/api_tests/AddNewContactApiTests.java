@@ -1,9 +1,8 @@
 package api_tests;
 
-import dto.Contact;
-import dto.ResponseMessageDto;
-import dto.TokenDto;
-import dto.User;
+import data_providers.ContactDataProvider;
+import data_providers.ContactWrongPhoneDataProvider;
+import dto.*;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -121,5 +120,109 @@ public class AddNewContactApiTests implements BaseApi {
             throw new RuntimeException(e);
         }
         Assert.assertEquals(response.code(), 401);
+    }
+
+    @Test(dataProvider = "dataProviderFromFile",
+            dataProviderClass = ContactWrongPhoneDataProvider.class)
+    public void addNewContactNegative_WrongPhone_ApiTest(Contact contact) {
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + ADD_NEW_CONTACT_URL)
+                .addHeader(AUTH, token.getToken())
+                .post(requestBody)
+                .build();
+        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
+            softAssert.assertEquals(response.code(), 400
+                    , "validate status code");
+            ErrorMessageKeyValueDto errorMessageDto = GSON.fromJson(response.body().string(), ErrorMessageKeyValueDto.class);
+            softAssert.assertEquals(errorMessageDto.getError(), "Bad Request"
+                    , "validate error name");
+            softAssert.assertEquals(errorMessageDto.getMessage().get("phone")
+                    , "Phone number must contain only digits! And length min 10, max 15!"
+                    , "validate message");
+            softAssert.assertAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test(dataProvider = "dataProviderFromFile_WrongEmail",
+            dataProviderClass = ContactDataProvider.class)
+    public void addNewContactNegative_WrongEmail_ApiTest(Contact contact) {
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + ADD_NEW_CONTACT_URL)
+                .addHeader(AUTH, token.getToken())
+                .post(requestBody)
+                .build();
+        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
+            softAssert.assertEquals(response.code(), 400
+                    , "validate status code");
+            ErrorMessageKeyValueDto errorMessageDto = GSON.fromJson(response.body().string(), ErrorMessageKeyValueDto.class);
+            softAssert.assertEquals(errorMessageDto.getError(), "Bad Request"
+                    , "validate error name");
+            softAssert.assertEquals(errorMessageDto.getMessage().get("email")
+                    , "must be a well-formed email address"
+                    , "validate message");
+            softAssert.assertAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test(dataProvider = "dataProviderFromFile_Wrong_EmptyField",
+            dataProviderClass = ContactDataProvider.class)
+    public void addNewContactNegative_Wrong_EmptyField_ApiTest(Contact contact) {
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + ADD_NEW_CONTACT_URL)
+                .addHeader(AUTH, token.getToken())
+                .post(requestBody)
+                .build();
+        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
+            softAssert.assertEquals(response.code(), 400
+                    , "validate status code");
+            ErrorMessageKeyValueDto errorMessageDto = GSON.fromJson(response.body().string(), ErrorMessageKeyValueDto.class);
+            softAssert.assertEquals(errorMessageDto.getError(), "Bad Request"
+                    , "validate error name");
+            String key = contact.getName().isBlank() ? "name"
+                    : contact.getLastName().isBlank() ? "lastName"
+                    : contact.getAddress().isBlank() ? "address"
+                    : "";
+            softAssert.assertEquals(errorMessageDto.getMessage().get(key)
+                    , "must not be blank"
+                    , "validate message");
+            softAssert.assertAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void addNewContactNegative_DuplicateContact_ApiTest() {
+        Contact contact = positiveContact();
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contact), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + ADD_NEW_CONTACT_URL)
+                .addHeader(AUTH, token.getToken())
+                .post(requestBody)
+                .build();
+        try {
+            Response response1 = OK_HTTP_CLIENT.newCall(request).execute();
+            softAssert.assertEquals(response1.code(), 200
+                    , "validate status code (new contact)");
+            Response response2 = OK_HTTP_CLIENT.newCall(request).execute();
+            softAssert.assertEquals(response2.code(), 409
+                    , "validate status code (duplicate contact)");
+//            ErrorMessageKeyValueDto errorMessageDto = GSON.fromJson(response2.body().string(), ErrorMessageKeyValueDto.class);
+//            softAssert.assertEquals(errorMessageDto.getError(), ""
+//                    , "validate error name");
+//            softAssert.assertEquals(errorMessageDto.getMessage().get("phone")
+//                    , ""
+//                    , "validate message");
+            softAssert.assertAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
