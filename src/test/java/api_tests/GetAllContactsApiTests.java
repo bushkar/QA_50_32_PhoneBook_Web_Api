@@ -1,6 +1,6 @@
 package api_tests;
 
-import com.google.gson.Gson;
+import dto.ContactsDto;
 import dto.ErrorMessageDto;
 import dto.TokenDto;
 import okhttp3.Request;
@@ -32,6 +32,8 @@ public class GetAllContactsApiTests implements BaseApi, ILogin {
                 .get()
                 .build();
         try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
+            ContactsDto contactsDto = GSON.fromJson(response.body().string(), ContactsDto.class);
+            System.out.println(contactsDto);
             Assert.assertEquals(response.code(), 200);
         } catch (IOException e) {
             throw new RuntimeException(e);
